@@ -1,0 +1,33 @@
+Requirements for running the Tundra Debugger software:
+
+(This will be cleaned up and fleshed out later.  For now, a quick rundown.)
+
+
+Initial Step:
+
+Start initially with Anaconda 3 (as of 02/2022).
+This provides a really good base without the hassle of compiling Qt, OpenSSL, python, and 
+anything else all with the same compiler suite 
+
+1) Add the conda-forge repositories
+
+2)  Run the Anaconda Prompt
+
+2)  Instaall mamba.  This provides a sane SAT solver for future installs.  The
+standard solver proved to have issues trying to install Qt packages.
+
+	conda install -n base conda-forge::mamba
+
+3)  Install Qt
+
+	mamba install qt
+
+
+4)  Install pyside2:
+
+	mamba install pyside2
+
+5)  from an anaconda shell, navigate to the project's src directory.  Then:
+
+	(powershell): ./TundraDebugger.py
+	(cmd.exe):    python TundraDebugger.py
