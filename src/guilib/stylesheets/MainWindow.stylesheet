@@ -1,0 +1,21 @@
+#MainWindow {
+  background-color: black;
+}
+
+QMenuBar {
+  background-color: black;
+  color: white;
+}
+
+QMenu {
+  background-color: black;
+  color: white;
+}
+
+QPushButton {
+  border-style: solid;
+  border-color: grey;
+  border-width: 2px;
+  border-radius: 6px;
+  color: white;
+}
