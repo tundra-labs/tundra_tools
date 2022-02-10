@@ -7,9 +7,25 @@ QMenuBar {
   color: white;
 }
 
+QMenuBar::item {
+  background-color: black;
+  color: white;
+}
+
+QMenuBar::item::selected {
+  background-color: lightgray;
+  color: black;
+}
+
 QMenu {
   background-color: black;
   color: white;
+  border: 1px solid #fff;
+}
+
+QMenu::item::selected {
+  background-color: lightgray;
+  color: black;
 }
 
 QPushButton {

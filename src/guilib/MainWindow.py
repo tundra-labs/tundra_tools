@@ -31,67 +31,57 @@ class MainWindow(QMainWindow):
 
 
     def create_menu_bar(self):
-        menu_bar = QMenuBar(self)
-        menu_bar.setObjectName("appMenuBar")
-        self.setMenuBar(menu_bar)
-        file_menu = QMenu("&File", self)
-        edit_menu = QMenu("&Edit", self)
-        help_menu = QMenu("&Help", self)
+        menu_bar = self.menuBar()
+        newAct = QAction('&Exit', self)
+        openAct = QAction('&Open', self)
+        saveAct = QAction('&Save', self)
+        exitAct = QAction('&Exit', self)
+        exitAct.triggered.connect(self.exitAction)
 
-        self.newAction = QAction(self)
-        self.openAction = QAction(self)
-        self.saveAction = QAction(self)
-        self.exitAction = QAction(self)
-        self.copyAction = QAction(self)
-        self.pasteAction = QAction(self)
-        self.cutAction = QAction(self)
-        self.helpContentAction = QAction(self)
-        self.aboutAction = QAction(self)
+        copyAct = QAction('&Copy', self)
+        pasteAct = QAction('&Paste', self)
+        helpContentAct = QAction('&Help', self)
+        aboutAct = QAction('&About', self)
 
-        menu_bar.addMenu(file_menu)
-        file_menu.addAction(self.newAction)
-        file_menu.addAction(self.openAction)
-        file_menu.addAction(self.saveAction)
-        file_menu.addSeparator()
-        file_menu.addAction(self.exitAction)
+        file_menu = menu_bar.addMenu('&File')
+        file_menu.addAction(newAct)
+        file_menu.addAction(openAct)
+        file_menu.addAction(saveAct)
+        file_menu.addAction(exitAct)
 
-        menu_bar.addMenu(edit_menu)
-        edit_menu.addAction(self.copyAction)
-        edit_menu.addAction(self.pasteAction)
-        edit_menu.addAction(self.cutAction)
+        edit_menu = menu_bar.addMenu('&Edit')
+        edit_menu.addAction(copyAct)
+        edit_menu.addAction(pasteAct)
 
-        menu_bar.addMenu(help_menu)
-        help_menu.addAction(self.helpContentAction)
+        help_menu = menu_bar.addMenu('&Help')
+        help_menu.addAction(helpContentAct)
         help_menu.addSeparator()
-        help_menu.addAction(self.aboutAction)
+        help_menu.addAction(aboutAct)
 
 
-    def newAction(self, method):
+    def newAction(self):
         print("New Action selected")
 
-    def openAction(self, method):
+    def openAction(self):
         print("Open Action selected")
 
-    def saveAction(self, method):
+    def saveAction(self):
         print("Save Action selected")
 
-    def exitAction(self, method):
+    def exitAction(self):
         print("Exit Action selected")
         sys.exit(0)
 
-    def copyAction(self, method):
+    def copyAction(self):
         print("Copy Action selected")
 
-    def pasteAction(self, method):
+    def pasteAction(self):
         print("Paste Action selected")
 
-    def cutAction(self, method):
-        print("Cut Action selected")
-
-    def helpContentAction(self, method):
+    def helpContentAction(self):
         print("Help Content Action selected")
 
-    def aboutAction(self, method):
+    def aboutAction(self):
         print("New Action selected")
 
 
