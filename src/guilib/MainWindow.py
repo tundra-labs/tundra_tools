@@ -6,6 +6,7 @@ import pexpect
 import re
 
 from pylib.Tracker import Tracker
+from guilib.LHWorker import LHWorker
 from pexpect import popen_spawn
 
 from PyQt5.QtCore import Qt
@@ -22,6 +23,8 @@ lighthouse_connected = False
 class MainWindow(QMainWindow):
     def __init__(self, parent=None, style_path=None):
         super().__init__()
+
+        self.thread = LHWorker()
 
         if style_path != None:
             with open(style_path, "r") as spfh:
@@ -98,8 +101,6 @@ class MainWindow(QMainWindow):
         help_menu.addAction(helpContentAct)
         help_menu.addSeparator()
         help_menu.addAction(aboutAct)
-
-    def paint_status_circle(self, color):
 
     def newAction(self):
         print("New Action selected")
