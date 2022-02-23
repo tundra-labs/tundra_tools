@@ -34,4 +34,14 @@ QPushButton {
   border-width: 2px;
   border-radius: 6px;
   color: white;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+QLabel#TitleLabel {
+  background-color: black;
+  color: white;
+  padding: 20 20 20 20;
+  font-size: 20pt;
+  font-weight: bold;
 }

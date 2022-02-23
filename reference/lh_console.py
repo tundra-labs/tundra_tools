@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import threading
 from win32com.shell import shell, shellcon
@@ -7,24 +8,22 @@ import sys
 import time
 import subprocess
 
-
 class lh_console:
-    
     def __init__(self,file_name=False):
         #steamPath = "D:\\Steam"
         #lh_path = steamPath + "\\steamapps\\common\\SteamVR\\tools\\lighthouse\\bin\\win32\\lighthouse_console.exe"
-        lh_path = "lighthouse_console.exe"
+        lh_path = "..\\bin\\lighthouse\\win32\\lighthouse_console.exe"
         if file_name:
             self.console = subprocess.Popen(lh_path + "> "+file_name, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         else:
             self.console = subprocess.Popen(lh_path, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    
+
     def start_background_thread(self):
         self.q = Queue()
         self.t = Thread(target=self.enqueue_output, args=(self.console.stdout, self.q))
         self.t.daemon = True # thread dies with the program
         self.t.start()
-    
+
     def enqueue_output(self, out, queue):
         try:
             for line in iter(out.readline, b''):
@@ -32,11 +31,11 @@ class lh_console:
             out.close()
         except:
             pass
-    
+
     def communicate(self,input):
         stdout, stderr = self.console.communicate(input=bytes(input,'utf-8'))
         return [stdout,stderr]
-    
+
     def read_output(self):
         rtn = ""
         loop = True
@@ -51,33 +50,33 @@ class lh_console:
             #else:
             #    rtn = rtn + out.decode('utf-8')
         return (rtn)
-    
+
     def read_line(self):
         try:  line = self.q.get_nowait().decode('utf-8') # or q.get(timeout=.1)
         except Empty:
             return False
         else: # got line
             return line
-        
+
     def read_all(self):
         rtn = ""
         line = self.read_line()
         while line:
             rtn = rtn + line
             line = self.read_line()
-            
+
         return rtn
-    
+
     def read_char(self):
         out = self.console.stdout.read1(1)
-    
+
     def cmd(self,cmd_string):
         self.console.stdin.write(bytes(cmd_string+'\n','utf-8'))
         self.console.stdin.flush()
-        
+
     def record(self,imu=True,sample=True,raw=True):
         self.cmd('clear')
-        print(self.read_output())        
+        print(self.read_output())
         if (imu):
             self.cmd('imu')
             print(self.read_output())
@@ -89,7 +88,7 @@ class lh_console:
             print(self.read_output())
         self.cmd('record')
         print(self.read_output())
-        
+
     def stop_and_save(self,file):
         self.cmd('record')
         print(self.read_output())
@@ -98,7 +97,7 @@ class lh_console:
         print(self.read_output())
         #os.rename("lighthouse_console_save.txt",file)
         print('moved lighthouse_console_save.txt to '+file)
-        
+
     def capture_tdm_csv(self,filename,time_period=60):
         t1 = threading.Thread(target = self.capture_tdm_csv_thread, args = (filename,time_period))
         t1.start()
@@ -149,7 +148,11 @@ class lh_console:
         with open(file_name, "w") as f:
             writer = csv.writer(f,lineterminator='\n')
             writer.writerows(master_csv)
-        
+
     def lh_exit(self):
         self.cmd('exit')
         self.console.stdout.close()
+
+l = lh_console()
+l.start_background_thread()
+print(l.read_all())

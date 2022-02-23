@@ -6,8 +6,8 @@ Requirements for running the Tundra Debugger software:
 Initial Step:
 
 Start initially with Anaconda 3 (as of 02/2022).
-This provides a really good base without the hassle of compiling Qt, OpenSSL, python, and 
-anything else all with the same compiler suite 
+This provides a really good base without the hassle of compiling Qt, OpenSSL, python, and
+anything else all with the same compiler suite
 
 1) Add the conda-forge repositories
 
@@ -22,12 +22,23 @@ standard solver proved to have issues trying to install Qt packages.
 
 	mamba install qt
 
-
 4)  Install pyside2:
 
 	mamba install pyside2
 
-5)  from an anaconda shell, navigate to the project's src directory.  Then:
+5)  From https://www.lfd.uci.edu/~gohlke/pythonlibs/#pythonnet:
+    Grab the appropriate version and install.  cp38 = python3.8, choose between amd64 or win32
+    install the downloaded file via pip, within the anaconda shell:
+
+      pip install pythonnet‑2.5.2‑cp38‑cp38‑win_amd64.whl
+
+6)  Again, using pip, install bleak:
+      pip install bleak
+
+7)  install pyexpect (may already be installed with anaconda base):
+  mamba install pyexpect
+
+FINALLY)  from an anaconda shell, navigate to the project's src directory.  Then:
 
 	(powershell): ./TundraDebugger.py
 	(cmd.exe):    python TundraDebugger.py
