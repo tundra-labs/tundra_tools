@@ -23,7 +23,7 @@ import guilib.MainWindow as gui
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = gui.MainWindow(None, "guilib\\stylesheets\\MainWindow.stylesheet")
+    window = gui.MainWindow(None)
     window.show()
 
     sys.exit(app.exec())

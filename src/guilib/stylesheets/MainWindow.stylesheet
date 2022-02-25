@@ -45,3 +45,18 @@ QLabel#TitleLabel {
   font-size: 20pt;
   font-weight: bold;
 }
+
+QLabel#StatusLabel {
+  background-color: black;
+  color: white;
+  padding: 20 20 20 20;
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+QTableWidget#DeviceTable {
+  background-color: black;
+  color: white;
+  font-size: 12pt;
+  font-weight: bold;
+}

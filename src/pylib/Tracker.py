@@ -4,7 +4,7 @@
 # Tracker class, will instantiate an object and set it's parameters based on the 2 lines of read_output
 # from lighthouse_console.exe::deviceinfo
 #
-# Parsiing will have to be updated should the output from the deviceinfo command change.
+# Parsing will have to be updated should the output from the deviceinfo command change.
 # ---
 
 class Tracker:
@@ -32,7 +32,7 @@ class Tracker:
 
         l1_serial = l1_parts[0].strip(":")
         if l1_serial != t0_serial:
-            print(f"Error, mismatched device lines from lh_console! {l1_parts[0]} != {t0_serial}")
+            print(f"Error, mismatched device lines from lh_console. {l1_parts[0]} != {t0_serial}")
             return False
 
         self.serial = l1_serial

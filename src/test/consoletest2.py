@@ -43,7 +43,7 @@ def get_devinfo(phandle=None):
 
 def main():
 
-    lh = pexpect.popen_spawn.PopenSpawn("..\\bin\\lighthouse\\win32\\lighthouse_console.exe")
+    lh = pexpect.popen_spawn.PopenSpawn("..\\..\\bin\\lighthouse\\win32\\lighthouse_console.exe")
     #fout = file("LOG.TXT", "wb")
     #lh.logfile_read = fout
 
