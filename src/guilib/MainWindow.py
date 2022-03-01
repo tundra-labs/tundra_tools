@@ -5,6 +5,8 @@ import signal
 import pexpect
 import re
 
+from functools import partial
+
 from pylib.Tracker import Tracker
 from guilib.LHWorker import LHWorker
 from pexpect import popen_spawn
@@ -14,11 +16,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QPushButton, QLabel, QMenuBar,
     QMenu, QAction, QVBoxLayout, QHBoxLayout, QStackedLayout,
-    QWidget, QTableWidget
+    QWidget, QTableWidget, QTableWidgetItem, QFrame
 )
 
 lighthouse_connected = False
-
 
 class MainWindow(QMainWindow):
     style_path = "guilib\\stylesheets\\MainWindow.stylesheet"
@@ -41,6 +42,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Tundra Debugger")
         self.resize(1280, 960)
         self.create_menu_bar()
+
+        self.identify_buttons = []
+        self.select_buttons = []
+        self.connected_serial = None
 
         page_layout = QVBoxLayout()
         status_label_layout = QHBoxLayout()
@@ -74,10 +79,20 @@ class MainWindow(QMainWindow):
 
         self.tableWidget = QTableWidget()
         self.tableWidget.setObjectName("DeviceTable")
+        self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.horizontalHeader().setVisible(False)
         self.tableWidget.setColumnCount(6)
-        header_labels = ['Device', 'Class', 'Vid/Pid', 'Config Data', '', '']
-        self.tableWidget.setHorizontalHeaderLabels(header_labels)
-        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.tableWidget.setColumnWidth(0, 150)
+        self.tableWidget.setColumnWidth(1, 220)
+        self.tableWidget.setColumnWidth(2, 230)
+        self.tableWidget.setColumnWidth(3, 250)
+        #header_labels = ['Device', 'Class', 'Vid/Pid', 'Config Data', '', '']
+        #header = self.tableWidget.horizontalHeader()
+        #header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        #self.tableWidget.setHorizontalHeaderLabels(header_labels)
+        self.tableWidget.setLineWidth(0)
+        self.tableWidget.setFrameStyle(QFrame.Box | QFrame.Plain)
+        #self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         middle_table_layout.addWidget(self.tableWidget)
 
         widget = QWidget()
@@ -85,9 +100,48 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
 
+    def format_table_cell(self, content):
+        result = QTableWidgetItem(content)
+        result.setTextAlignment(Qt.AlignHCenter)
+        return result
+
+
     def update_devtable_ui(self, devices):
         numdevs = len(devices)
+
         self.tableWidget.setRowCount(numdevs)
+        self.identify_buttons = []
+        self.select_buttons = []
+        rowct = 0
+        for device in devices:
+            cell0 = self.format_table_cell(device.serial)
+            self.tableWidget.setItem(rowct, 0, cell0)
+            cell1 = self.format_table_cell(device.devclass)
+            self.tableWidget.setItem(rowct, 1, cell1)
+            vidpid = f"vid: {device.vid}  pid: {device.pid}"
+            cell2 = self.format_table_cell(vidpid)
+            self.tableWidget.setItem(rowct, 2, cell2)
+            cdata = f"Config: {device.config_inflated} bytes\n        {device.config_compressed} bytes compressed"
+            cell3 = self.format_table_cell(cdata)
+            self.tableWidget.setItem(rowct, 3, cell3)
+
+            idbutton = QPushButton("Identify")
+            idbutton.setObjectName(device.serial)
+            idbutton.setCheckable(True)
+            idbutton.clicked.connect(partial(self.id_button_pressed, device.serial))
+            self.identify_buttons.append(idbutton)
+            self.tableWidget.setCellWidget(rowct, 4, idbutton)
+
+            conbutton = QPushButton("Connect")
+            conbutton.setObjectName(device.serial)
+            conbutton.setCheckable(True)
+            conbutton.clicked.connect(partial(self.connect_button_pressed, device.serial))
+            self.identify_buttons.append(conbutton)
+            self.tableWidget.setCellWidget(rowct, 5, conbutton)
+
+            rowct = rowct + 1
+
+        #self.tableWidget.resizeToContents()
 
 
     def update_connect_ui_on(self):
@@ -137,6 +191,7 @@ class MainWindow(QMainWindow):
 
     def exitAction(self):
         print("Exit Action selected")
+        self.lhworker.close_console()
         sys.exit(0)
 
     def copyAction(self):
@@ -151,6 +206,12 @@ class MainWindow(QMainWindow):
     def aboutAction(self):
         print("New Action selected")
 
+    def id_button_pressed(self, serial):
+        self.lhworker.identify_device(serial)
+
+    def connect_button_pressed(self, serial):
+        self.lhworker.connect_device(serial)
+        self.connected_serial = serial
 
     def scan_button_pressed(self):
         self.lhworker.start()

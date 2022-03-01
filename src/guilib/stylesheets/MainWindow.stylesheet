@@ -58,5 +58,5 @@ QTableWidget#DeviceTable {
   background-color: black;
   color: white;
   font-size: 12pt;
-  font-weight: bold;
+  font-weight: medium;
 }

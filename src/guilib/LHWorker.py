@@ -24,7 +24,6 @@ class LHWorker(QThread):
     devinfo_ready = pyqtSignal(list)
 
     def __init__(self, parent=None):
-        #super().__init__()
         QThread.__init__(self, parent)
         return
 
@@ -39,10 +38,23 @@ class LHWorker(QThread):
         opendata = self.lh.before
         self.console_open.emit()
         self.get_devinfo()
-        #while lh_console_open:
-            #print("in LHWorker::run")
-            #QThread.usleep(1000)
 
+
+    def close_console(self):
+        self.lh.sendline('quit\r\n')
+        self.lh.wait()
+
+
+    def identify_device(self, serial):
+        self.lh.sendline('identifycontroller\r\n')
+        self.lh.expect('lh>')
+
+
+    def connect_device(self, serial):
+        cmd = f"serial {serial}\r\n"
+        self.lh.sendline(cmd)
+        self.lh.expect('lh>')
+        
 
     def get_devinfo(self):
         self.lh.sendline('deviceinfo\r\n')
@@ -65,4 +77,3 @@ class LHWorker(QThread):
             result.append(tracker)
 
         self.devinfo_ready.emit(result)
-        #return result
