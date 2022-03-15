@@ -9,6 +9,7 @@ from functools import partial
 
 from pylib.Tracker import Tracker
 from guilib.LHWorker import LHWorker
+from guilib.TrackerWindow import TrackerWindow
 from pexpect import popen_spawn
 
 from PyQt5.QtCore import Qt
@@ -85,7 +86,6 @@ class MainWindow(QMainWindow):
         self.tableWidget.setColumnWidth(0, 150)
         self.tableWidget.setColumnWidth(1, 220)
         self.tableWidget.setColumnWidth(2, 230)
-        self.tableWidget.setColumnWidth(3, 250)
         #header_labels = ['Device', 'Class', 'Vid/Pid', 'Config Data', '', '']
         #header = self.tableWidget.horizontalHeader()
         #header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
@@ -93,7 +93,9 @@ class MainWindow(QMainWindow):
         self.tableWidget.setLineWidth(0)
         self.tableWidget.setFrameStyle(QFrame.Box | QFrame.Plain)
         #self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        middle_table_layout.addWidget(self.tableWidget)
+        self.tableWidget.setFixedWidth(1000)
+        self.tableWidget.setFixedHeight(450)
+        middle_table_layout.addWidget(self.tableWidget, alignment=Qt.AlignCenter)
 
         widget = QWidget()
         widget.setLayout(page_layout)
@@ -107,6 +109,7 @@ class MainWindow(QMainWindow):
 
 
     def update_devtable_ui(self, devices):
+        self.devices = devices
         numdevs = len(devices)
 
         self.tableWidget.setRowCount(numdevs)
@@ -121,23 +124,23 @@ class MainWindow(QMainWindow):
             vidpid = f"vid: {device.vid}  pid: {device.pid}"
             cell2 = self.format_table_cell(vidpid)
             self.tableWidget.setItem(rowct, 2, cell2)
-            cdata = f"Config: {device.config_inflated} bytes\n        {device.config_compressed} bytes compressed"
-            cell3 = self.format_table_cell(cdata)
-            self.tableWidget.setItem(rowct, 3, cell3)
+            #cdata = f"Config: {device.config_inflated} bytes\n        {device.config_compressed} bytes compressed"
+            #cell3 = self.format_table_cell(cdata)
+            #self.tableWidget.setItem(rowct, 3, cell3)
 
-            idbutton = QPushButton("Identify")
-            idbutton.setObjectName(device.serial)
-            idbutton.setCheckable(True)
-            idbutton.clicked.connect(partial(self.id_button_pressed, device.serial))
-            self.identify_buttons.append(idbutton)
-            self.tableWidget.setCellWidget(rowct, 4, idbutton)
+            #idbutton = QPushButton("Identify")
+            #idbutton.setObjectName(device.serial)
+            #idbutton.setCheckable(True)
+            #idbutton.clicked.connect(partial(self.id_button_pressed, device.serial))
+            #self.identify_buttons.append(idbutton)
+            #self.tableWidget.setCellWidget(rowct, 4, idbutton)
 
             conbutton = QPushButton("Connect")
             conbutton.setObjectName(device.serial)
             conbutton.setCheckable(True)
             conbutton.clicked.connect(partial(self.connect_button_pressed, device.serial))
             self.identify_buttons.append(conbutton)
-            self.tableWidget.setCellWidget(rowct, 5, conbutton)
+            self.tableWidget.setCellWidget(rowct, 3, conbutton)
 
             rowct = rowct + 1
 
@@ -210,8 +213,14 @@ class MainWindow(QMainWindow):
         self.lhworker.identify_device(serial)
 
     def connect_button_pressed(self, serial):
+        sending_button = self.sender()
         self.lhworker.connect_device(serial)
         self.connected_serial = serial
+        self.device_window = TrackerWindow(self, serial, self.lhworker)
+        self.device_window.show()
+        sending_button.setDefault(True)
+        self.device_window.serial = serial;
+
 
     def scan_button_pressed(self):
         self.lhworker.start()

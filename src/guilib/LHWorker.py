@@ -22,6 +22,7 @@ class LHWorker(QThread):
     console_close = pyqtSignal()
     console_open = pyqtSignal()
     devinfo_ready = pyqtSignal(list)
+    devices = []
 
     def __init__(self, parent=None):
         QThread.__init__(self, parent)
@@ -54,7 +55,13 @@ class LHWorker(QThread):
         cmd = f"serial {serial}\r\n"
         self.lh.sendline(cmd)
         self.lh.expect('lh>')
-        
+
+
+    def get_device_by_serial(self, serial):
+        for tracker in self.devices:
+            if tracker.serial == serial:
+                return tracker
+
 
     def get_devinfo(self):
         self.lh.sendline('deviceinfo\r\n')
@@ -63,7 +70,7 @@ class LHWorker(QThread):
         devinfo_parts = devinfo_data.split('\r\n')
         num_lines = len(devinfo_parts) - 1
         num_devices = num_lines/2
-        print("Number of devices found: ", num_devices)
+        #print("Number of devices found: ", num_devices)
         result = []
 
         ct = 0;
@@ -75,5 +82,6 @@ class LHWorker(QThread):
             ct = ct + 1
             tracker.instantiate_from_raw(line1, line2)
             result.append(tracker)
+            self.devices.append(tracker)
 
         self.devinfo_ready.emit(result)
