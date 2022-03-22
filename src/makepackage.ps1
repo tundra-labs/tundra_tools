@@ -1,0 +1,1 @@
+pyinstaller --windowed ./TundraDebugger.spec

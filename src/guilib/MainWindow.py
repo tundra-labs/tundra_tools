@@ -6,6 +6,7 @@ import pexpect
 import re
 
 from functools import partial
+from os.path import exists
 
 from pylib.Tracker import Tracker
 from guilib.LHWorker import LHWorker
@@ -29,16 +30,30 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.startUI()
 
+    def load_stylesheet(self):
+        style_path_exists = exists(self.style_path)
+        if not style_path_exists:
+            self.style_path = "MainWindow.stylesheet"
+
+        try:
+            with open(self.style_path, "r") as spfh:
+                self.setStyleSheet(spfs.read())
+        except Exception as e:
+            print(f"Error, can't find file {self.style_path}")
+            print(e)
+            sys.exit(4)
+
     def startUI(self):
         self.lhworker = LHWorker()
         self.lhworker.console_open.connect(self.update_connect_ui_on)
         self.lhworker.console_close.connect(self.update_connect_ui_off)
         self.lhworker.devinfo_ready.connect(self.update_devtable_ui)
 
-        if self.style_path != None:
-            with open(self.style_path, "r") as spfh:
-                self.setStyleSheet(spfh.read())
+        #if self.style_path != None:
+            #with open(self.style_path, "r") as spfh:
+                #self.setStyleSheet(spfh.read())
 
+        self.load_stylesheet()
         self.setObjectName("MainWindow")
         self.setWindowTitle("Tundra Debugger")
         self.resize(1280, 960)

@@ -4,6 +4,7 @@ import subprocess
 import signal
 import pexpect
 import re
+from os.path import exists
 
 from functools import partial
 
@@ -31,11 +32,25 @@ class TrackerWindow(QMainWindow):
         self.device = self.lhworker.get_device_by_serial(serial)
         self.startUI()
 
-    def startUI(self):
-        if self.style_path != None:
-            with open(self.style_path, "r") as spfh:
-                self.setStyleSheet(spfh.read())
+    def load_stylesheet(self):
+        style_path_exists = exists(self.style_path)
+        if not style_path_exists:
+            self.style_path = "TrackerWindow.stylesheet"
 
+        try:
+            with open(self.style_path, "r") as spfh:
+                self.setStyleSheet(spfs.read())
+        except Exception as e:
+            print(f"Error, can't find file {self.style_path}")
+            print(e)
+            sys.exit(4)
+
+    def startUI(self):
+        #if self.style_path != None:
+        #    with open(self.style_path, "r") as spfh:
+        #        self.setStyleSheet(spfh.read())
+
+        self.load_stylesheet()
         title = f"Tundra Debugger :: Device Window :: {self.serial}"
         self.setObjectName("TrackerWindow")
         self.setWindowTitle(title)
