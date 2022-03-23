@@ -21,27 +21,17 @@ from PyQt5.QtWidgets import (
     QWidget, QTableWidget, QTableWidgetItem, QFrame
 )
 
+from guilib.MainWindowStyle import main_window_style
+
 lighthouse_connected = False
 
 class MainWindow(QMainWindow):
-    style_path = "guilib\\stylesheets\\MainWindow.stylesheet"
-
     def __init__(self, parent=None):
         super().__init__()
         self.startUI()
 
     def load_stylesheet(self):
-        style_path_exists = exists(self.style_path)
-        if not style_path_exists:
-            self.style_path = "MainWindow.stylesheet"
-
-        try:
-            with open(self.style_path, "r") as spfh:
-                self.setStyleSheet(spfs.read())
-        except Exception as e:
-            print(f"Error, can't find file {self.style_path}")
-            print(e)
-            sys.exit(4)
+        self.setStyleSheet(main_window_style)
 
     def startUI(self):
         self.lhworker = LHWorker()

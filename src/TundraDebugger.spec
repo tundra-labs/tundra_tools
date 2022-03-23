@@ -3,15 +3,10 @@
 
 block_cipher = None
 
-datafiles = [
-  ('guilib\\stylesheets\\MainWindow.stylesheet', '.'),
-  ('guilib\\stylesheets\\TrackerWindow.stylesheet', '.')
-]
-
 a = Analysis(['TundraDebugger.py'],
              pathex=[],
              binaries=[],
-             datas=datafiles,
+             datas=[],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},

@@ -20,8 +20,9 @@ from PyQt5.QtWidgets import (
     QWidget, QTableWidget, QTableWidgetItem, QFrame
 )
 
+from guilib.TrackerWindowStyle import tracker_window_style
+
 class TrackerWindow(QMainWindow):
-    style_path = "guilib\\stylesheets\\TrackerWindow.stylesheet"
     serial = ""
     lhworker = None
 
@@ -33,17 +34,7 @@ class TrackerWindow(QMainWindow):
         self.startUI()
 
     def load_stylesheet(self):
-        style_path_exists = exists(self.style_path)
-        if not style_path_exists:
-            self.style_path = "TrackerWindow.stylesheet"
-
-        try:
-            with open(self.style_path, "r") as spfh:
-                self.setStyleSheet(spfs.read())
-        except Exception as e:
-            print(f"Error, can't find file {self.style_path}")
-            print(e)
-            sys.exit(4)
+        self.setStyleSheet(tracker_window_style)
 
     def startUI(self):
         #if self.style_path != None:

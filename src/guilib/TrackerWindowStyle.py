@@ -1,4 +1,5 @@
-#MainWindow {
+tracker_window_style = """
+#TrackerWindow {
   background-color: black;
 }
 
@@ -38,35 +39,11 @@ QPushButton {
   font-weight: bold;
 }
 
-QPushButton:Pressed {
-  border-style: solid;
-  border-color: black;
-  border-width: 2px;
-  border-radius: 6px;
-  color: black;
-  font-size: 10pt;
-  font-weight: bold;
-}
-
-QLabel#TitleLabel {
+QLabel {
   background-color: black;
   color: white;
   padding: 20 20 20 20;
-  font-size: 20pt;
-  font-weight: bold;
-}
-
-QLabel#StatusLabel {
-  background-color: black;
-  color: white;
-  padding: 20 20 20 20;
-  font-size: 14pt;
-  font-weight: bold;
-}
-
-QTableWidget#DeviceTable {
-  background-color: black;
-  color: white;
   font-size: 12pt;
-  font-weight: medium;
+  font-weight: bold;
 }
+"""

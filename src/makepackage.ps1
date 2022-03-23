@@ -1,1 +1,1 @@
-pyinstaller --windowed ./TundraDebugger.spec
+pyinstaller --clean ./TundraDebugger.spec
