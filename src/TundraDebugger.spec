@@ -1,11 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
 block_cipher = None
 
 a = Analysis(['TundraDebugger.py'],
              pathex=[],
-             binaries=[],
+             binaries=[("C:\\Users\\Master\\projects\\tundra_tools\\bin\\lighthouse\\win32\\lighthouse_console.exe", ".")],
              datas=[],
              hiddenimports=[],
              hookspath=[],

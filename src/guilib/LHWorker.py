@@ -16,7 +16,8 @@ from pylib.Tracker import Tracker
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 
 class LHWorker(QThread):
-    lh_path = "C:\\Users\\Master\\projects\\tundra_tools\\bin\\lighthouse\\win32\\lighthouse_console.exe"
+    #lh_path = "C:\\Users\\Master\\projects\\tundra_tools\\bin\\lighthouse\\win32\\lighthouse_console.exe"
+    lh_path = "lighthouse_console.exe"
     lh = None
     lh_console_open = False;
     console_close = pyqtSignal()
