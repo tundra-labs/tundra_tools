@@ -9,15 +9,14 @@ import signal
 import pexpect
 import re
 
+from datetime import datetime
 from pexpect import popen_spawn
-
 from pylib.Tracker import Tracker
-
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 
 class LHWorker(QThread):
-    #lh_path = "C:\\Users\\Master\\projects\\tundra_tools\\bin\\lighthouse\\win32\\lighthouse_console.exe"
-    lh_path = "lighthouse_console.exe"
+    lh_path = ""
+    appConfig = None
     lh = None
     lh_console_open = False;
     console_close = pyqtSignal()
@@ -25,8 +24,13 @@ class LHWorker(QThread):
     devinfo_ready = pyqtSignal(list)
     devices = []
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, appconfig=None):
         QThread.__init__(self, parent)
+        if appconfig == None:
+            self.lh_path = "lighthouse_console.exe"
+        else:
+            self.appConfig = appconfig
+            self.lh_path = self.appConfig['DEFAULT']['LighthouseConsolePath']
         return
 
     def __del__(self, parent=None):
@@ -41,28 +45,23 @@ class LHWorker(QThread):
         self.console_open.emit()
         self.get_devinfo()
 
-
     def close_console(self):
         self.lh.sendline('quit\r\n')
         self.lh.wait()
 
-
     def identify_device(self, serial):
         self.lh.sendline('identifycontroller\r\n')
         self.lh.expect('lh>')
-
 
     def connect_device(self, serial):
         cmd = f"serial {serial}\r\n"
         self.lh.sendline(cmd)
         self.lh.expect('lh>')
 
-
     def get_device_by_serial(self, serial):
         for tracker in self.devices:
             if tracker.serial == serial:
                 return tracker
-
 
     def get_devinfo(self):
         self.lh.sendline('deviceinfo\r\n')
@@ -86,3 +85,13 @@ class LHWorker(QThread):
             self.devices.append(tracker)
 
         self.devinfo_ready.emit(result)
+
+    def get_json_config(self, serial):
+        cur_datetime = datetime.now()
+        datestr = cur_datetime.strftime("%Y%m%d%H%M%S")
+        cfgdir = self.appConfig['DEFAULT']['LHConfigs']
+        filename = cfgdir + "\\" + serial + "_" + datestr + ".json"
+        cmd = f"downloadconfig {filename}"
+        self.lh.sendline(cmd)
+        self.lh.sendline('\r\n')
+        self.lh.expect('lh>')

@@ -11,16 +11,17 @@ import subprocess
 import signal
 import pexpect
 import re
+import configparser
 
 from pexpect import popen_spawn
 from pylib.Tracker import Tracker
-
 from PyQt5.QtWidgets import QApplication
 
 import guilib.MainWindow as gui
 
 basedir = os.path.dirname(__file__)
 
+# Set the process name as you want it to appear in Task Manager
 try:
     from ctypes import windll
     myappid = 'com.TundraLabs.apps.TundraDebugger'
@@ -29,9 +30,29 @@ except ImportError:
     pass
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    # Read the base config, to get the actual config.  If the directories, don't exist, create and initialize
+    config = None
+    base_config = configparser.ConfigParser()
+    base_config.read('TundraDebugger.ini')
+    if not os.path.isdir(base_config['DEFAULT']['Storagepath']):
+        print(f"creating directory at: {base_config['DEFAULT']['LHConfigs']}")
+        os.makedirs(base_config['DEFAULT']['LHConfigs'])
+        with open(base_config['DEFAULT']['IniPath'], 'w') as configfile:
+            base_config.write(configfile)
 
-    window = gui.MainWindow(None)
+        config = base_config
+    else:
+        config = configparser.ConfigParser()
+        config.read(base_config['DEFAULT']['IniPath'])
+
+    print("LighthouseConsolePath: ", config['DEFAULT']['LighthouseConsolePath'])
+    print("StoragePath: ", config['DEFAULT']['StoragePath'])
+    print("IniPath: ", config['DEFAULT']['IniPath'])
+    print("LHConfigs: ", config['DEFAULT']['LHConfigs'])
+
+    # Start gui portion
+    app = QApplication(sys.argv)
+    window = gui.MainWindow(None, config)
     window.show()
 
     sys.exit(app.exec())

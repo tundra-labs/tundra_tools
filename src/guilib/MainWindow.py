@@ -26,15 +26,16 @@ from guilib.MainWindowStyle import main_window_style
 lighthouse_connected = False
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, appconfig=None):
         super().__init__()
+        self.appConfig = appconfig
         self.startUI()
 
     def load_stylesheet(self):
         self.setStyleSheet(main_window_style)
 
     def startUI(self):
-        self.lhworker = LHWorker()
+        self.lhworker = LHWorker(None, self.appConfig)
         self.lhworker.console_open.connect(self.update_connect_ui_on)
         self.lhworker.console_close.connect(self.update_connect_ui_off)
         self.lhworker.devinfo_ready.connect(self.update_devtable_ui)
@@ -221,7 +222,7 @@ class MainWindow(QMainWindow):
         sending_button = self.sender()
         self.lhworker.connect_device(serial)
         self.connected_serial = serial
-        self.device_window = TrackerWindow(self, serial, self.lhworker)
+        self.device_window = TrackerWindow(self, serial, self.lhworker, self.appConfig)
         self.device_window.show()
         sending_button.setDefault(True)
         self.device_window.serial = serial;

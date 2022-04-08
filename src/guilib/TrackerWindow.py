@@ -26,11 +26,12 @@ class TrackerWindow(QMainWindow):
     serial = ""
     lhworker = None
 
-    def __init__(self, parent=None, serial="", worker=None):
+    def __init__(self, parent=None, serial="", worker=None, appconfig=None):
         super().__init__()
         self.serial = serial
         self.lhworker = worker
         self.device = self.lhworker.get_device_by_serial(serial)
+        self.appConfig = appconfig
         self.startUI()
 
     def load_stylesheet(self):
@@ -87,19 +88,19 @@ class TrackerWindow(QMainWindow):
         self.imu_button.clicked.connect(self.imu_button_pressed)
         layout.addWidget(self.imu_button)
 
-        self.sensor_button = QPushButton("Get Optical Sensor Sample")
+        self.sensor_button = QPushButton("Download Json Configuration")
         self.sensor_button.setCheckable(True)
-        self.sensor_button.clicked.connect(self.sensor_button_pressed)
+        self.sensor_button.clicked.connect(self.download_button_pressed)
         layout.addWidget(self.sensor_button)
 
-        self.download_button = QPushButton("Get Optical Sensor Sample")
+        self.download_button = QPushButton("Upload Json Configuration")
         self.download_button.setCheckable(True)
-        self.download_button.clicked.connect(self.download_button_pressed)
+        self.download_button.clicked.connect(self.upload_button_pressed)
         layout.addWidget(self.download_button)
 
         self.upload_button = QPushButton("Get Optical Sensor Sample")
         self.upload_button.setCheckable(True)
-        self.upload_button.clicked.connect(self.upload_button_pressed)
+        self.upload_button.clicked.connect(self.sensor_button_pressed)
         layout.addWidget(self.upload_button)
 
 
@@ -113,6 +114,7 @@ class TrackerWindow(QMainWindow):
 
 
     def download_button_pressed(self):
+        self.lhworker.get_json_config(self.serial)
         return
 
 
