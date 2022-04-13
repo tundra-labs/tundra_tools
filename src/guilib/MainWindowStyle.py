@@ -34,16 +34,18 @@ QPushButton {
   border-color: grey;
   border-width: 2px;
   border-radius: 6px;
+  background-color: black;
   color: white;
   font-size: 10pt;
   font-weight: bold;
 }
 
-QPushButton:Pressed {
+QPushButton:pressed {
   border-style: solid;
   border-color: black;
   border-width: 2px;
   border-radius: 6px;
+  background-color: white;
   color: black;
   font-size: 10pt;
   font-weight: bold;
