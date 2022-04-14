@@ -80,7 +80,12 @@ class TrackerWindow(QMainWindow):
         layout.addWidget(label2)
         label3 = QLabel("Device Class: " + self.device.devclass)
         layout.addWidget(label3)
+        print(f"device: {self.device}")
 
+
+    #def build_version_layout(self, layout):
+        #label= QLabel()
+        #layout.addWidget()
 
     def build_action_layout(self, layout):
         self.imu_button = QPushButton("Get IMU Sample")

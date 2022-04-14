@@ -15,13 +15,24 @@ class Tracker:
         self.config_inflated = 0
         self.vid = 0
         self.pid = 0
+        self.watchman_board_model = ""
+        self.watchman_version = ""
+        self.hardware_revision = ""
+        self.vrc_version = ""
+        self.radio_version = ""
+
 
     def __str__(self):
         result = (f"Tracker device {self.serial}:\n" +
                   f"   device class: {self.devclass}\n" +
                   f"   vid: {self.vid}\n" +
                   f"   pid: {self.pid}\n" +
-                  f"   config data: {self.config_compressed} bytes compressed, expands to {self.config_inflated} bytes.\n")
+                  f"   config data: {self.config_compressed} bytes compressed, expands to {self.config_inflated} bytes.\n" +
+                  f"   Watchman Board Model: {self.watchman_board_model}\n" +
+                  f"   Watchman Version: {self.watchman_version}\n" +
+                  f"   Hardware Revision: {self.hardware_revision}\n" +
+                  f"   VRC Version: {self.vrc_version}\n" +
+                  f"   Radio Version: {self.radio_version}\n")
         return result
 
     def instantiate_from_raw(self, line1="", line2=""):
