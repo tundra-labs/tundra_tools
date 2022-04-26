@@ -58,4 +58,18 @@ QLabel {
   font-size: 12pt;
   font-weight: bold;
 }
+
+QLabel#devinfo {
+  background-color: black;
+  color: white;
+  padding: 2 2 2 2;
+  font-size: 9pt;
+  font-weight: bold;
+}
+
+QHBoxLayout#actionButtonLayout {
+  background-color: black;
+  color: white;
+  padding: 40 40 40 40;
+}
 """

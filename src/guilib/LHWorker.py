@@ -75,7 +75,6 @@ class LHWorker(QThread):
         version_data = vdata.decode('utf-8')
         version_parts = version_data.split('\r\n')
         for ol in version_parts:
-            print(f"get_hw_version: ol: {ol}")
             if(ol.startswith("VRC")):
                 vrc_parts = ol.split(' ')
                 tracker.vrc_version = vrc_parts[2]
@@ -120,6 +119,14 @@ class LHWorker(QThread):
         cfgdir = self.appConfig['DEFAULT']['LHConfigs']
         filename = cfgdir + "\\" + serial + "_" + datestr + ".json"
         cmd = f"downloadconfig {filename}"
+        self.lh.sendline(cmd)
+        #self.lh.sendline('\r\n')
+        self.lh.expect('lh>')
+
+    def upload_json_config(self, serial, filePath):
+        #cfgdir = self.appConfig['DEFAULT']['LHConfigs']
+        #filename = cfgdir + "\\" + serial + "_" + datestr + ".json"
+        cmd = f"uploadconfig {filePath}"
         self.lh.sendline(cmd)
         #self.lh.sendline('\r\n')
         self.lh.expect('lh>')

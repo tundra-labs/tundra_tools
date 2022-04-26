@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
         self.load_stylesheet()
         self.setObjectName("MainWindow")
         self.setWindowTitle("Tundra Debugger")
-        self.resize(1280, 960)
+        self.resize(800, 800)
         self.create_menu_bar()
 
         self.identify_buttons = []
@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
 
     def create_menu_bar(self):
         menu_bar = self.menuBar()
-        newAct = QAction('&Exit', self)
+        newAct = QAction('&New', self)
         openAct = QAction('&Open', self)
         saveAct = QAction('&Save', self)
         exitAct = QAction('&Exit', self)

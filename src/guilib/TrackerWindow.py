@@ -5,7 +5,7 @@ import signal
 import pexpect
 import re
 from os.path import exists
-
+from tr import tr
 from functools import partial
 
 from pylib.Tracker import Tracker
@@ -17,7 +17,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QPushButton, QLabel, QMenuBar,
     QMenu, QAction, QVBoxLayout, QHBoxLayout, QStackedLayout,
-    QWidget, QTableWidget, QTableWidgetItem, QFrame
+    QWidget, QTableWidget, QTableWidgetItem, QFrame, QFileDialog
 )
 
 from guilib.TrackerWindowStyle import tracker_window_style
@@ -46,24 +46,34 @@ class TrackerWindow(QMainWindow):
         title = f"Tundra Debugger :: Device Window :: {self.serial}"
         self.setObjectName("TrackerWindow")
         self.setWindowTitle(title)
-        self.resize(1280, 960)
+        self.resize(800, 700)
 
         page_layout = QVBoxLayout()
 
         devinfo_layout = QHBoxLayout()
+        devinfo_layout.addStretch(1)
+        devinfo_left_layout = QVBoxLayout()
+        devinfo_right_layout = QVBoxLayout()
+        devinfo_layout.addLayout(devinfo_left_layout)
+        devinfo_layout.addLayout(devinfo_right_layout)
 
         section1_layout = QHBoxLayout()
         action_button_layout = QHBoxLayout()
+        action_button_layout.setObjectName("actionButtonLayout")
 
         stack_layout = QStackedLayout()
 
+        devinfo_spacer_layout = QHBoxLayout()
+        devinfo_spacer_layout.setObjectName("actionButtonLayout")
+        devinfo_spacer_layout.addStretch(1)
         page_layout.addLayout(devinfo_layout)
+        page_layout.addLayout(devinfo_spacer_layout)
         page_layout.addLayout(section1_layout)
         page_layout.addLayout(stack_layout)
 
         section1_layout.addLayout(action_button_layout)
 
-        self.build_devinfo_layout(devinfo_layout)
+        self.build_devinfo_layout(devinfo_left_layout, devinfo_right_layout)
         self.build_action_layout(action_button_layout)
 
 
@@ -72,15 +82,45 @@ class TrackerWindow(QMainWindow):
         self.setCentralWidget(widget)
 
 
-    def build_devinfo_layout(self, layout):
+    def build_devinfo_layout(self, layout_left, layout_right):
         label = QLabel("Serial: " + self.serial)
-        layout.addWidget(label)
+        label.setObjectName("devinfo")
+        layout_left.addWidget(label)
         #layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        label2 = QLabel("Vid/Pid: " + self.device.vid + " / " + self.device.pid)
-        layout.addWidget(label2)
-        label3 = QLabel("Device Class: " + self.device.devclass)
-        layout.addWidget(label3)
-        print(f"device: {self.device}")
+        label2 = QLabel("Vid: " + self.device.vid)
+        label2.setObjectName("devinfo")
+        layout_left.addWidget(label2)
+        label3 = QLabel("Pid: " + self.device.pid)
+        label3.setObjectName("devinfo")
+        layout_left.addWidget(label3)
+        label4 = QLabel("Device Class: " + self.device.devclass)
+        label4.setObjectName("devinfo")
+        layout_left.addWidget(label4)
+        label5 = QLabel("Watchman Board Model: " + self.device.watchman_board_model)
+        label5.setObjectName("devinfo")
+        layout_right.addWidget(label5)
+        label6 = QLabel("Watchman Version: " + self.device.watchman_version)
+        label6.setObjectName("devinfo")
+        layout_right.addWidget(label6)
+        label7 = QLabel("Hardware Revision: " + self.device.hardware_revision)
+        label7.setObjectName("devinfo")
+        layout_right.addWidget(label7)
+        label8 = QLabel("VRC Version: " + self.device.vrc_version)
+        label8.setObjectName("devinfo")
+        layout_right.addWidget(label8)
+        label9 = QLabel("Radio Version: " + self.device.radio_version)
+        label9.setObjectName("devinfo")
+        layout_right.addWidget(label9)
+
+    #def build_devinfo_layout(self, layout):
+        #label = QLabel("Serial: " + self.serial)
+        #layout.addWidget(label)
+        ##layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        #label2 = QLabel("Vid/Pid: " + self.device.vid + " / " + self.device.pid)
+        #layout.addWidget(label2)
+        #label3 = QLabel("Device Class: " + self.device.devclass)
+        #layout.addWidget(label3)
+        #print(f"device: {self.device}")
 
 
     #def build_version_layout(self, layout):
@@ -109,7 +149,6 @@ class TrackerWindow(QMainWindow):
         layout.addWidget(self.upload_button)
 
 
-
     def imu_button_pressed(self):
         return
 
@@ -124,4 +163,11 @@ class TrackerWindow(QMainWindow):
 
 
     def upload_button_pressed(self):
+        cfgdir = self.lhworker.appConfig['DEFAULT']['LHConfigs']
+        try:
+            fileName = QFileDialog.getOpenFileName(self, "Open Config File", cfgdir, "config Files (*.json)")
+            print("filename: " + filename)
+            #self.lhworker.upload_json_config(self.serial, filename)
+        except(Exception):
+            print("failure getting filename from dialog")
         return
