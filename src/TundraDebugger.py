@@ -30,18 +30,32 @@ try:
 except ImportError:
     pass
 
+# This function will loop thru a config opbject and replace HOMEDIR with the actual contents of %USERPROFILE%
+def convert_ini(config):
+    configobj = config
+    for key in configobj['DEFAULT']:
+        if "HOMEDIR" in configobj['DEFAULT'][key]:
+            tvalue = configobj['DEFAULT'][key].replace("HOMEDIR", homedir)
+            configobj['DEFAULT'][key] = tvalue
+    return configobj
+
+
 if __name__ == "__main__":
     # Read the base config, to get the actual config.  If the directories, don't exist, create and initialize
     config = None
-    base_config = configparser.ConfigParser()
+    bconfig = configparser.ConfigParser()
 
     # These defaults should be changed before release to utilize the current users Documents Directory
-    base_config['DEFAULT'] = {
+    bconfig['DEFAULT'] = {
         'LighthouseConsolePath': 'lighthouse_console.exe',
-        'StoragePath': "C:\\Users\\Master\\Documents\\TundraDebugger",
-        'IniPath': "C:\\Users\\Master\\Documents\\TundraDebugger\\TundraDebugger.ini",
-        'LHConfigs': "C:\\Users\\Master\\Documents\\TundraDebugger\\Configs"
+        'StoragePath': r"HOMEDIR\Documents\TundraDebugger",
+        'IniPath': r"HOMEDIR\Documents\TundraDebugger\TundraDebugger.ini",
+        'LHConfigs': r"HOMEDIR\Documents\TundraDebugger\Configs"
     }
+
+    # Loop thru and replace all instances of HOMEDIR with the results of %USERPROFILE%
+    homedir = os.getenv("USERPROFILE")
+    base_config = convert_ini(bconfig)
 
     if not os.path.isdir(base_config['DEFAULT']['StoragePath']):
         os.makedirs(base_config['DEFAULT']['LHConfigs'])
@@ -50,8 +64,9 @@ if __name__ == "__main__":
 
         config = base_config
     else:
-        config = configparser.ConfigParser()
-        config.read(base_config['DEFAULT']['IniPath'])
+        cfg = configparser.ConfigParser()
+        cfg.read(base_config['DEFAULT']['IniPath'])
+        config = convert_ini(cfg)
 
     #print("LighthouseConsolePath: ", config['DEFAULT']['LighthouseConsolePath'])
     #print("StoragePath: ", config['DEFAULT']['StoragePath'])
