@@ -120,13 +120,9 @@ class LHWorker(QThread):
         filename = cfgdir + "\\" + serial + "_" + datestr + ".json"
         cmd = f"downloadconfig {filename}"
         self.lh.sendline(cmd)
-        #self.lh.sendline('\r\n')
         self.lh.expect('lh>')
 
     def upload_json_config(self, serial, filePath):
-        #cfgdir = self.appConfig['DEFAULT']['LHConfigs']
-        #filename = cfgdir + "\\" + serial + "_" + datestr + ".json"
         cmd = f"uploadconfig {filePath}"
         self.lh.sendline(cmd)
-        #self.lh.sendline('\r\n')
         self.lh.expect('lh>')

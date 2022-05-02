@@ -227,7 +227,6 @@ class MainWindow(QMainWindow):
         sending_button.setDefault(True)
         self.device_window.serial = serial;
 
-
     def scan_button_pressed(self):
         self.lhworker.start()
         #self.lhworker.get_devinfo()

@@ -5,7 +5,7 @@ block_cipher = None
 a = Analysis(['TundraDebugger.py'],
              pathex=[],
              binaries=[("C:\\Users\\Master\\projects\\tundra_tools\\bin\\lighthouse\\win32\\lighthouse_console.exe", ".")],
-             datas=[],
+             datas=[("C:\\Users\\Master\\projects\\tundra_tools\\src\\TundraDebugger.ini", ".")],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -17,7 +17,6 @@ a = Analysis(['TundraDebugger.py'],
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
-
 
 exe = EXE(pyz,
           a.scripts,
@@ -37,3 +36,6 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None )
+
+#import shutil
+#shutil.copyfile('TundraDebugger.ini', '{0}/TundraDebugger.ini'.format(DISTPATH))

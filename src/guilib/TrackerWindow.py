@@ -164,10 +164,10 @@ class TrackerWindow(QMainWindow):
 
     def upload_button_pressed(self):
         cfgdir = self.lhworker.appConfig['DEFAULT']['LHConfigs']
+        fileName = None
         try:
-            fileName = QFileDialog.getOpenFileName(self, "Open Config File", cfgdir, "config Files (*.json)")
-            print("filename: " + filename)
-            #self.lhworker.upload_json_config(self.serial, filename)
-        except(Exception):
-            print("failure getting filename from dialog")
+            fileName, _ = QFileDialog.getOpenFileName(self, "Open Config File", cfgdir, "config Files (*.json)")
+            self.lhworker.upload_json_config(self.serial, fileName)
+        except Exception as e:
+            print("failure getting filename from dialog: ", e)
         return
