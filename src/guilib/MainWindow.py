@@ -11,14 +11,15 @@ from os.path import exists
 from pylib.Tracker import Tracker
 from guilib.LHWorker import LHWorker
 from guilib.TrackerWindow import TrackerWindow
+from guilib.QToaster import QToaster
 from pexpect import popen_spawn
 
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QPushButton, QLabel, QMenuBar,
-    QMenu, QAction, QVBoxLayout, QHBoxLayout, QStackedLayout,
-    QWidget, QTableWidget, QTableWidgetItem, QFrame
+    QApplication, QMainWindow, QPushButton, QLabel, QMenuBar, QMenu, QAction, QVBoxLayout,
+    QHBoxLayout, QStackedLayout, QWidget, QTableWidget, QTableWidgetItem, QFrame
 )
 
 from guilib.MainWindowStyle import main_window_style
@@ -85,27 +86,24 @@ class MainWindow(QMainWindow):
         top_button_layout.addWidget(self.button)
 
         self.tableWidget = QTableWidget()
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.tableWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.tableWidget.setObjectName("DeviceTable")
         self.tableWidget.verticalHeader().setVisible(False)
         self.tableWidget.horizontalHeader().setVisible(False)
-        self.tableWidget.setColumnCount(6)
-        self.tableWidget.setColumnWidth(0, 150)
-        self.tableWidget.setColumnWidth(1, 220)
-        self.tableWidget.setColumnWidth(2, 230)
-        #header_labels = ['Device', 'Class', 'Vid/Pid', 'Config Data', '', '']
-        #header = self.tableWidget.horizontalHeader()
-        #header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        #self.tableWidget.setHorizontalHeaderLabels(header_labels)
+        self.tableWidget.setColumnCount(3)
+        #self.tableWidget.setColumnWidth(0, 150)
+        #self.tableWidget.setColumnWidth(1, 220)
+        #self.tableWidget.setColumnWidth(2, 230)
         self.tableWidget.setLineWidth(0)
         self.tableWidget.setFrameStyle(QFrame.Box | QFrame.Plain)
-        #self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.tableWidget.setFixedWidth(1000)
-        self.tableWidget.setFixedHeight(450)
+        self.tableWidget.setFixedWidth(800)
+        self.tableWidget.setFixedHeight(400)
         middle_table_layout.addWidget(self.tableWidget, alignment=Qt.AlignCenter)
 
-        widget = QWidget()
-        widget.setLayout(page_layout)
-        self.setCentralWidget(widget)
+        self.widget = QWidget()
+        self.widget.setLayout(page_layout)
+        self.setCentralWidget(self.widget)
 
 
     def format_table_cell(self, content):
@@ -127,34 +125,21 @@ class MainWindow(QMainWindow):
             self.tableWidget.setItem(rowct, 0, cell0)
             cell1 = self.format_table_cell(device.devclass)
             self.tableWidget.setItem(rowct, 1, cell1)
-            vidpid = f"vid: {device.vid}  pid: {device.pid}"
-            cell2 = self.format_table_cell(vidpid)
-            self.tableWidget.setItem(rowct, 2, cell2)
-            #cdata = f"Config: {device.config_inflated} bytes\n        {device.config_compressed} bytes compressed"
-            #cell3 = self.format_table_cell(cdata)
-            #self.tableWidget.setItem(rowct, 3, cell3)
-
-            #idbutton = QPushButton("Identify")
-            #idbutton.setObjectName(device.serial)
-            #idbutton.setCheckable(True)
-            #idbutton.clicked.connect(partial(self.id_button_pressed, device.serial))
-            #self.identify_buttons.append(idbutton)
-            #self.tableWidget.setCellWidget(rowct, 4, idbutton)
 
             conbutton = QPushButton("Connect")
             conbutton.setObjectName(device.serial)
             conbutton.setCheckable(True)
             conbutton.clicked.connect(partial(self.connect_button_pressed, device.serial))
             self.identify_buttons.append(conbutton)
-            self.tableWidget.setCellWidget(rowct, 3, conbutton)
-
+            self.tableWidget.setCellWidget(rowct, 2, conbutton)
             rowct = rowct + 1
 
-        #self.tableWidget.resizeToContents()
-
+        self.tableWidget.resizeColumnsToContents()
 
     def update_connect_ui_on(self):
         self.status_label.setText("Connected.")
+        corner = QtCore.Qt.BottomRightCorner
+        QToaster.showMessage(self, "Connected to lighthouse console service.", corner=corner, desktop=False)
 
 
     def update_connect_ui_off(self):

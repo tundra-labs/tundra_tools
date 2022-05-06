@@ -72,4 +72,11 @@ QHBoxLayout#actionButtonLayout {
   color: white;
   padding: 40 40 40 40;
 }
+
+QToaster {
+    border: 1px solid gray;
+    border-radius: 4px;
+    background-color: black;
+    color: white;
+}
 """

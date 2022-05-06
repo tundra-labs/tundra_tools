@@ -68,9 +68,18 @@ QLabel#StatusLabel {
 }
 
 QTableWidget#DeviceTable {
+  border: 1px solid gray;
   background-color: black;
   color: white;
   font-size: 12pt;
   font-weight: medium;
+}
+
+QToaster#StatusPopup {
+    border: 1px solid gray;
+    border-radius: 4px;
+    background-color: black;
+    font-size: 10pt;
+    color: white;
 }
 """
